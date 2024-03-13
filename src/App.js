@@ -1,12 +1,17 @@
 import './App.css';
-import Hello from './components/Hello';
+// import Hello from './components/Hello';
 import Wrapper from './components/Wrapper';
-import Counter from './components/Counter';
-import InputSample from './components/InputSample';
-import InputSample2 from './components/InputSample2';
+// import Counter from './components/Counter';
+// import InputSample from './components/InputSample';
+// import InputSample2 from './components/InputSample2';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
+
+function countActiveUsers(users) {
+    console.log('활성 사용자 수를 세는 중...');
+    return users.filter((it) => it.active).length;
+}
 
 function App() {
     const [users, setUsers] = useState([
@@ -37,15 +42,18 @@ function App() {
     });
     const { username, email } = inputs;
 
-    const onChnage = (e) => {
-        const { name, value } = e.target;
-        setInputs({
-            ...inputs,
-            [name]: value,
-        });
-    };
+    const onChnage = useCallback(
+        (e) => {
+            const { name, value } = e.target;
+            setInputs({
+                ...inputs,
+                [name]: value,
+            });
+        },
+        [inputs]
+    );
 
-    const onCreate = () => {
+    const onCreate = useCallback(() => {
         const user = {
             id: nextId.current,
             username,
@@ -58,20 +66,28 @@ function App() {
             email: '',
         });
         nextId.current += 1;
-    };
+    });
 
-    const onRemove = (targetId) => {
-        setUsers(users.filter((it) => it.id !== targetId));
-    };
+    const onRemove = useCallback(
+        (targetId) => {
+            setUsers(users.filter((it) => it.id !== targetId));
+        },
+        [users]
+    );
 
-    const onToggle = (targetId) => {
-        setUsers(users.map((it) => (it.id === targetId ? { ...it, active: !it.active } : it)));
-    };
+    const onToggle = useCallback(
+        (targetId) => {
+            setUsers(users.map((it) => (it.id === targetId ? { ...it, active: !it.active } : it)));
+        },
+        [users]
+    );
+
+    const count = useMemo(() => countActiveUsers(users), [users]);
 
     return (
         <div>
             <Wrapper>
-                <Hello name="react" isSpecial={true} />
+                {/* <Hello name="react" isSpecial={true} />
                 <Hello name="typescript" isSpecial={false} />
                 <hr />
                 <Counter />
@@ -79,9 +95,10 @@ function App() {
                 <InputSample />
                 <hr />
                 <InputSample2 />
-                <hr />
+                <hr /> */}
                 <CreateUser id={users.id} username={username} email={email} onChange={onChnage} onCreate={onCreate} />
                 <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
+                <div>활성사용자 수 : {count}</div>
             </Wrapper>
         </div>
     );
