@@ -1,6 +1,6 @@
 import './App.css';
 // import Hello from './components/Hello';
-import Wrapper from './components/Wrapper';
+// import Wrapper from './components/Wrapper';
 // import Counter from './components/Counter';
 // import InputSample from './components/InputSample';
 // import InputSample2 from './components/InputSample2';
@@ -42,16 +42,13 @@ function App() {
     });
     const { username, email } = inputs;
 
-    const onChnage = useCallback(
-        (e) => {
-            const { name, value } = e.target;
-            setInputs({
-                ...inputs,
-                [name]: value,
-            });
-        },
-        [inputs]
-    );
+    const onChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setInputs((inputs) => ({
+            ...inputs,
+            [name]: value,
+        }));
+    }, []);
 
     const onCreate = useCallback(() => {
         const user = {
@@ -66,28 +63,22 @@ function App() {
             email: '',
         });
         nextId.current += 1;
-    });
+    }, [username, email]);
 
-    const onRemove = useCallback(
-        (targetId) => {
-            setUsers(users.filter((it) => it.id !== targetId));
-        },
-        [users]
-    );
+    const onRemove = useCallback((targetId) => {
+        setUsers((users) => users.filter((it) => it.id !== targetId));
+    }, []);
 
-    const onToggle = useCallback(
-        (targetId) => {
-            setUsers(users.map((it) => (it.id === targetId ? { ...it, active: !it.active } : it)));
-        },
-        [users]
-    );
+    const onToggle = useCallback((targetId) => {
+        setUsers((users) => users.map((it) => (it.id === targetId ? { ...it, active: !it.active } : it)));
+    }, []);
 
     const count = useMemo(() => countActiveUsers(users), [users]);
 
     return (
         <div>
-            <Wrapper>
-                {/* <Hello name="react" isSpecial={true} />
+            {/* <Wrapper> */}
+            {/* <Hello name="react" isSpecial={true} />
                 <Hello name="typescript" isSpecial={false} />
                 <hr />
                 <Counter />
@@ -96,10 +87,10 @@ function App() {
                 <hr />
                 <InputSample2 />
                 <hr /> */}
-                <CreateUser id={users.id} username={username} email={email} onChange={onChnage} onCreate={onCreate} />
-                <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
-                <div>활성사용자 수 : {count}</div>
-            </Wrapper>
+            <CreateUser id={users.id} username={username} email={email} onChange={onChange} onCreate={onCreate} />
+            <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
+            <div>활성사용자 수 : {count}</div>
+            {/* </Wrapper> */}
         </div>
     );
 }

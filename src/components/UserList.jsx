@@ -2,7 +2,7 @@ import React from 'react';
 /**
  * 배열 렌더링 & 삭제
  */
-function User({ user, onRemove, onToggle }) {
+const User = React.memo(function User({ user, onRemove, onToggle }) {
     // useEffect(() => {
     //     console.log('user 값이 설정됨');
     //     console.log(user);
@@ -20,7 +20,7 @@ function User({ user, onRemove, onToggle }) {
             <button onClick={() => onRemove(user.id)}>삭제</button>
         </div>
     );
-}
+});
 
 function UserList({ users, onRemove, onToggle }) {
     return (
@@ -32,4 +32,4 @@ function UserList({ users, onRemove, onToggle }) {
     );
 }
 
-export default UserList;
+export default React.memo(UserList);

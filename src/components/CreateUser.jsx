@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 /**
  * 배열 추가
  */
-function CreateUser({ id, username, email, onChange, onCreate }) {
+function CreateUser({ username, email, onChange, onCreate }) {
+    useEffect(() => {
+        console.log('렌더링');
+    });
     return (
         <div>
             <input name="username" placeholder="계정명" onChange={onChange} value={username} />
@@ -12,4 +15,4 @@ function CreateUser({ id, username, email, onChange, onCreate }) {
     );
 }
 
-export default CreateUser;
+export default React.memo(CreateUser);
