@@ -1,7 +1,7 @@
 import './App.css';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
-import { useMemo, useRef, useState, useCallback, useReducer } from 'react';
+import React, { useMemo, useRef, useCallback, useReducer } from 'react';
 
 function countActiveUsers(users) {
     console.log('활성 사용자 수를 세는 중...');
@@ -71,6 +71,8 @@ function reducer(state, action) {
     }
 }
 
+export const UserDispatch = React.createContext(null);
+
 function App2() {
     const [state, dispatch] = useReducer(reducer, initialState);
     const nextId = useRef(4);
@@ -96,25 +98,25 @@ function App2() {
         });
         nextId.current += 1;
     }, [username, email]);
-    const onToggle = useCallback((targetId) => {
-        dispatch({
-            type: 'TOGGLE_USER',
-            targetId,
-        });
-    }, []);
-    const onRemove = useCallback((targetId) => {
-        dispatch({
-            type: 'REMOVE_USER',
-            targetId,
-        });
-    }, []);
+    // const onToggle = useCallback((targetId) => {
+    //     dispatch({
+    //         type: 'TOGGLE_USER',
+    //         targetId,
+    //     });
+    // }, []);
+    // const onRemove = useCallback((targetId) => {
+    //     dispatch({
+    //         type: 'REMOVE_USER',
+    //         targetId,
+    //     });
+    // }, []);
     const count = useMemo(() => countActiveUsers(users), [users]);
     return (
-        <>
+        <UserDispatch.Provider value={dispatch}>
             <CreateUser username={username} email={email} onChange={onChange} onCreate={onCreate} />
-            <UserList users={users} onToggle={onToggle} onRemove={onRemove} />
+            <UserList users={users} />
             <div>활성사용자 수 : {count}</div>
-        </>
+        </UserDispatch.Provider>
     );
 }
 
